@@ -1,6 +1,6 @@
 FROM alpine:3.23.2
 
-RUN apk update && apk add mariadb-client \
+RUN apk update && apk add mariadb-client gettext \
 	php83 \
 	php83-fpm \
 	php83-phar \
@@ -22,7 +22,5 @@ COPY ./tools/wordpress-script.sh /usr/local/bin/wordpress-script.sh
 RUN chmod +x /usr/local/bin/wordpress-script.sh
 
 RUN adduser -D -H -s /sbin/nologin -g www-data -G www-data www-data
-
-EXPOSE 9000
 
 CMD ["wordpress-script.sh"]
