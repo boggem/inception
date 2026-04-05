@@ -7,7 +7,13 @@ WORDPRESS_DIR=$(DATA_DIR)/wordpress
 
 COMPOSE_FILE=srcs/docker-compose.yml
 
-all: mariadb_data wordpress_data
+env_check:
+	@test -f srcs/.env || { echo "ERROR: srcs/.env not found"; exit 1; }
+	@grep -q INCEPTION_NGINX_PORT srcs/.env || { echo "ERROR: INCEPTION_NGINX_PORT missing from .env"; exit 1; }
+	@grep -q INCEPTION_WP_PORT srcs/.env || { echo "ERROR: INCEPTION_WP_PORT missing from .env"; exit 1; }
+	@grep -q INCEPTION_MARIADB_PORT srcs/.env || { echo "ERROR: INCEPTION_MARIADB_PORT missing from .env"; exit 1; }
+
+all: env_check mariadb_data wordpress_data
 	@mkdir -p $(MARIADB_DIR) #creating mariadb data dir
 	@mkdir -p $(WORDPRESS_DIR)
 	@echo "++++ Containers are being configured ++++"

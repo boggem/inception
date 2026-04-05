@@ -27,14 +27,14 @@ services:
         image: mariadb:10.11.11
         restart: always
         env_file: .env
-        ports: 
-            - "3306:3306"
+        expose: 
+            - "${INCEPTION_MARIADB_PORT}"
         volumes:
             - mariadb:/var/lib/mysql
         networks:
             - network
         healthcheck:
-            test: ["CMD", "mariadb-admin", "ping", "--protocol=tcp", "--host=localhost", "-u${WORDPRESS_DATABASE_USER}", "-p${WORDPRESS_DATABASE_USER_PASSWORD}"]
+            test: ["CMD", "mariadb-admin", "ping", "--protocol=tcp", "--host=localhost", "--port=${INCEPTION_MARIADB_PORT}", "-u${INCEPTION_WP_DB_USER}", "-p${INCEPTION_WP_DB_USER_PASSWORD}"]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -46,6 +46,8 @@ services:
         image: wordpress:6.7.2
         restart: always
         env_file: .env
+        expose:
+            - "${INCEPTION_WP_PORT}"
         networks:
           - network
         volumes:
@@ -58,7 +60,7 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
-            start_period: 120s
+            start_period: 300s
 
     nginx:
         container_name: nginx
@@ -72,7 +74,7 @@ services:
         networks:
           - network
         ports:
-          - "443:443"
+          - "${INCEPTION_NGINX_PORT}:${INCEPTION_NGINX_PORT}"
         volumes:
           - wordpress:/var/www/html
 
