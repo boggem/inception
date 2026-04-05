@@ -18,11 +18,11 @@ wget -q https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.pha
 chmod +x /usr/local/bin/wp
 
 echo "==== Checking if MariaDB is running ===="
-mariadb-admin ping --protocol=tcp --host=mariadb -u $INCEPTION_WP_DB_USER --password=$INCEPTION_WP_DB_USER_PASSWORD --wait=300
+mariadb-admin ping --protocol=tcp --host=mariadb --port=$INCEPTION_MARIADB_PORT -u $INCEPTION_WP_DB_USER --password=$INCEPTION_WP_DB_USER_PASSWORD --wait=300
 
 if [ ! -f /var/www/html/wp-config.php ]; then
 	echo "==== Starting WordPress Config ===="
-	wp core download --allow-root
+	wp core download --allow-root --version=6.7.2
 	
 	wp config create \
 		--dbname=$INCEPTION_WP_DB_NAME \

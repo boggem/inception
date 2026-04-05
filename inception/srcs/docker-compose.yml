@@ -27,14 +27,14 @@ services:
         image: mariadb:10.11.11
         restart: always
         env_file: .env
-        ports: 
+        expose: 
             - "${INCEPTION_MARIADB_PORT}"
         volumes:
             - mariadb:/var/lib/mysql
         networks:
             - network
         healthcheck:
-            test: ["CMD", "mariadb-admin", "ping", "--protocol=tcp", "--host=localhost", "-u${INCEPTION_WP_DB_USER}", "-p${INCEPTION_WP_DB_USER_PASSWORD}"]
+            test: ["CMD", "mariadb-admin", "ping", "--protocol=tcp", "--host=localhost", "--port=${INCEPTION_MARIADB_PORT}", "-u${INCEPTION_WP_DB_USER}", "-p${INCEPTION_WP_DB_USER_PASSWORD}"]
             interval: 10s
             timeout: 5s
             retries: 5
@@ -60,7 +60,7 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
-            start_period: 120s
+            start_period: 300s
 
     nginx:
         container_name: nginx
